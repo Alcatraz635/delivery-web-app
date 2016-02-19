@@ -1,0 +1,158 @@
+<!--ERROR/SUCCESS HANDLERS-->
+{{#if error}}
+<div class="alert alert-danger">
+   <strong >No customer matching that phone number!</strong> Please create new customer or query another phone number
+</div>
+{{/if}}
+{{#if address_updated}}
+<div class="alert alert-success">
+   <strong >Address updated!</strong> 
+</div>
+{{/if}}
+{{#if customer_error}}
+<div class="alert alert-danger">
+   <strong >Customer already exists!</strong>
+</div>
+{{/if}}
+{{#if customer_found}}
+<div class="alert alert-success">
+   <strong>Found customer!</strong> Finish filling the new delivery order form.
+</div>
+{{/if}}
+{{#if new_number}}
+<div class="alert alert-success">
+   <strong>New Customer Created!</strong> Query the new customer's number and finish filling the new delivery order form.
+</div>
+{{/if}}
+{{#if new_delivery}}
+<div class="alert alert-success">
+   <strong>New Order Created!</strong>
+</div>
+{{/if}}
+<!--PHONE NUMBER LOOKUP FORM-->
+<div class="container container-small">
+   <div class="panel panel-default">
+      <div class="panel-heading">
+         <h1>New Order Form</h1>
+      </div>
+      <div class="panel-body">
+         <form role="form" name="lookup" action="/lookup" id="lookup_form" method="POST">
+            <h4>Search for exsisting customer with their phone number or create a new customer:</h4>
+            <input required type="text" name="phone_number" id="number" placeholder="e.g. 5555555555" {{#if new_number}} value="{{new_number}}" {{/if}}/>
+            <button type="submit" value="Submit" class="btn btn-primary" id="lookup">Lookup</button>
+            <div class="form-group">
+               <div id="messages"></div>
+            </div>
+         </form>
+         <br>
+         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newUserModal">New Customer</button>
+<!--AUTO FILL ORDER FORM-->
+         {{#if customer}}
+         <form role="form" action="/new-delivery" method="POST">
+            <div class="form-group">
+               <br>
+               <label for="name" id="name">Customer Name</label>
+               <input required type="text" name="name" class="form-control"
+                  id="name" placeholder="Enter name" readonly="true" value="{{customer.[0].customer_name}}" />
+               <br>
+               <label for="deliveryAddress" id="deliveryAddressLabel">Delivery Address</label>
+               <input required type="deliveryAddress" name="deliveryAddress" class="form-control"
+                  id="deliveryAddress" placeholder="Enter address" readonly="true" value="{{customer.[0].address}}" />
+               <br>
+               <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-primary" id="deliveryAddressButton">Update Delivery Address</button>
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateUserModal">Update Contact Address</button>
+               </div>
+               <br><br>
+               <label for="deliveryDriver" name="deliveryDriver" id="name">Delivery Driver</label>
+               <select name="deliveryDriver" class="form-control">
+                  {{#each customer}}
+                  <option value="{{this.employee_name}}">{{this.employee_name}}</option>
+                  {{/each}}
+               </select>
+               <br>
+               <label for="name" name="status" id="name">Delivery Status</label>
+               <input required type="text" name="status" class="form-control"
+                  id="name" value ="Ready for delivery" readonly="true"/>
+            </div>
+            <button type="submit" Value="Submit" class="btn btn-primary">Submit</button>
+         </form>
+         {{/if}}
+      </div>
+   </div>
+</div>
+<!-- NEW CUSTOMER FORM MODAL -->
+<div class="modal fade" id="newUserModal" tabindex="-1" role="dialog"
+   aria-labelledby="newUserModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <!-- Modal Header -->
+         <div class="modal-header">
+            <button type="button" class="close"
+               data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title" id="newUserModalLabel">
+               New Customer
+            </h4>
+         </div>
+         <div class="modal-body">
+            <form role="form" id="customer_form"action="/new-user" method="POST">
+               <div class="form-group">
+                  <label for="customerName">Name</label>
+                  <input required type="text" name="customerName" class="form-control"
+                     id="customer_name" placeholder="Enter name"/>
+                  <br>
+                  <label for="address">Address</label>
+                  <input required type="text" name="address" class="form-control"
+                     id="address" placeholder="Enter address"/>
+                  <br>
+                  <label for="phoneNumber">Phone Number</label>
+                  <input required type="text" name="phoneNumber" class="form-control"
+                     id="phoneNumber" placeholder="Enter phone number"/>
+               </div>
+               <button type="submit" Value="Submit" class="btn btn-primary">Submit</button>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- UPDATE ADDRESS FORM MODAL -->
+<div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog"
+   aria-labelledby="updateUserModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+   <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+         <button type="button" class="close"
+            data-dismiss="modal">
+         <span aria-hidden="true">&times;</span>
+         <span class="sr-only">Close</span>
+         </button>
+         <h4 class="modal-title" id="updateUserModalLabel">
+            Update {{customer.[0].customer_name}}'s Address
+         </h4>
+      </div>
+      <div class="modal-body">
+         <form role="form" action="/update-user" method="POST">
+            <div class="form-group">
+               <label for="customerName">Name</label>
+               <input required type="text" name="customerName" class="form-control"
+                  id="customer_name" placeholder="Enter name" readonly="true" value="{{customer.[0].customer_name}}"/>
+               <br>
+               <label for="address">Address</label>
+               <input required type="text" name="address" class="form-control"
+                  id="address" placeholder="Enter new address"/>
+               <br>
+               <button type="submit" Value="Submit" class="btn btn-primary">Submit</button>
+               <div class="form-group">
+                  <div >
+                     <div id="messages"></div>
+                  </div>
+               </div>
+         </form>
+         </div>
+      </div>
+   </div>
+</div>
