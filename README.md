@@ -12,8 +12,8 @@ Sample Web App For a Delivery Service created using:
 <li>Nodemon
 </ul>
 <h2>How to run locally</h2></br>
-Have git and node.js installed on your machine
-<code></br>
+Have git and node.js installed on your machine</br>
+<code>
 git clone https://github.com/Alcatraz635/delivery-web-app.git
 </code></br>
 <code>
